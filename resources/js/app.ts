@@ -1,5 +1,7 @@
 import { createInertiaApp } from '@inertiajs/vue3';
+import { createApp, h } from 'vue';
 import { initializeTheme } from '@/composables/useAppearance';
+import { registerDirectives } from '@/directives';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { initializeFlashToast } from '@/lib/flashToast';
@@ -17,6 +19,13 @@ createInertiaApp({
             default:
                 return AppLayout;
         }
+    },
+    setup({ el, App, props, plugin }) {
+        const app = createApp({ render: () => h(App, props) });
+
+        app.use(plugin);
+        registerDirectives(app);
+        app.mount(el as HTMLElement);
     },
     progress: {
         color: '#4B5563',

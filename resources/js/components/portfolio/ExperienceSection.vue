@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Briefcase, Calendar, MapPin } from '@lucide/vue';
+import SectionHeading from '@/components/portfolio/SectionHeading.vue';
 
 const experience = [
     {
@@ -33,30 +34,35 @@ const experience = [
 </script>
 
 <template>
-    <section id="experience" class="scroll-mt-20 px-6 py-24 sm:py-32">
+    <section id="experience" class="scroll-mt-24 px-6 py-24 sm:py-32">
         <div class="mx-auto max-w-4xl">
-            <p
-                class="text-sm font-semibold tracking-widest text-cyan-400 uppercase"
-            >
-                Experience
-            </p>
-            <h2 class="mt-2 text-3xl font-bold text-neutral-50 sm:text-4xl">
-                Where I've worked
-            </h2>
+            <SectionHeading eyebrow="Experience" title="Where I've worked" />
 
-            <ol class="mt-14 space-y-10 border-l border-white/10 pl-8">
-                <li v-for="job in experience" :key="job.org" class="relative">
+            <ol
+                class="mt-14 space-y-10 border-l border-black/10 pl-8 dark:border-white/10"
+            >
+                <li
+                    v-for="(job, i) in experience"
+                    :key="job.org"
+                    v-reveal="{ variant: 'left', delay: i * 120 }"
+                    class="relative"
+                >
                     <span
                         class="absolute top-1 -left-[calc(2rem+5px)] flex h-3 w-3 items-center justify-center rounded-full"
                         :class="
                             job.current
                                 ? 'bg-cyan-400 shadow-[0_0_0_4px_rgba(34,211,238,0.2)]'
-                                : 'bg-neutral-600'
+                                : 'bg-neutral-400 dark:bg-neutral-600'
                         "
-                    />
+                    >
+                        <span
+                            v-if="job.current"
+                            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60"
+                        />
+                    </span>
 
                     <div
-                        class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-colors hover:border-cyan-400/40 hover:bg-white/[0.05]"
+                        class="rounded-2xl border border-black/10 bg-black/[0.03] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-400/40 hover:bg-black/[0.05] hover:shadow-lg hover:shadow-cyan-500/5 dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
                     >
                         <div
                             class="flex flex-wrap items-center gap-2 text-xs text-neutral-500"
@@ -75,19 +81,29 @@ const experience = [
                                 <MapPin class="h-3.5 w-3.5" />
                                 {{ job.location }}
                             </span>
+                            <span
+                                v-if="job.current"
+                                class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/10 px-2 py-0.5 font-semibold text-cyan-600 dark:text-cyan-400"
+                            >
+                                Current
+                            </span>
                         </div>
 
                         <h3
-                            class="mt-2 flex items-center gap-2 text-lg font-semibold text-neutral-100"
+                            class="mt-2 flex items-center gap-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100"
                         >
-                            <Briefcase class="h-4 w-4 text-purple-400" />
+                            <Briefcase
+                                class="h-4 w-4 text-purple-500 dark:text-purple-400"
+                            />
                             {{ job.role }}
                         </h3>
-                        <p class="text-sm font-medium text-cyan-400">
+                        <p
+                            class="text-sm font-medium text-cyan-500 dark:text-cyan-400"
+                        >
                             {{ job.org }}
                         </p>
                         <p
-                            class="mt-3 text-sm leading-relaxed text-neutral-400"
+                            class="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400"
                         >
                             {{ job.description }}
                         </p>
