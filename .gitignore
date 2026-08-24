@@ -22,6 +22,8 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /auth.json
+/deploy/vercel-assets/build
+/deploy/vercel-assets/.vercel
 /.fleet
 /.idea
 /.nova

@@ -1,0 +1,64 @@
+name: deploy-assets
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+        with:
+          version: '10'
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      # Wayfinder (a Vite plugin) shells out to `php artisan` while building, so vendor/
+      # and a bootable app (a real-shaped APP_KEY) need to exist before `pnpm build` runs.
+      # Nothing here talks to a database or serves traffic.
+      - name: Install PHP dependencies
+        run: composer install --no-dev --no-scripts --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install JS dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build frontend assets
+        env:
+          APP_KEY: 'base64:MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA='
+        run: pnpm build
+
+      - name: Stage build output for Vercel
+        run: |
+          rm -rf deploy/vercel-assets/build
+          mkdir -p deploy/vercel-assets/build
+          cp -r public/build/. deploy/vercel-assets/build/
+
+      - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npx --yes vercel@latest deploy --prod --cwd deploy/vercel-assets --token="$VERCEL_TOKEN" --yes
