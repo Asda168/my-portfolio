@@ -5,6 +5,15 @@ import SectionHeading from '@/components/portfolio/SectionHeading.vue';
 
 const projects = [
     {
+        title: 'PyLearn — Interactive Python University',
+        description:
+            'A Python & Django learning platform with an online code playground, auto-graded exercises, 3D visual lessons, and a Khmer/English interface.',
+        tags: ['Django', 'Python', 'Three.js', 'REST API'],
+        demoUrl: 'https://pylearn-psi.vercel.app/',
+        repoUrl: 'https://github.com/Asda168/pylearn',
+        featured: true,
+    },
+    {
         title: 'CheckinMe Enterprise Dashboard',
         description:
             'Internal dashboard for managing bookings, staff, and reporting for an enterprise check-in platform.',
